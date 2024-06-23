@@ -1,12 +1,36 @@
 library(ggplot2)
 #FILE 1
 
-data = read.csv("23peptide.txt", header = TRUE, sep ="\t")
+data = read.csv("UndepletedMPlasmaDIA.txt", header = TRUE, sep ="\t")
 
-data
+data[1:5,1:5]
 dim(data)
+row.names(data)<- data$PG.ProteinGroups
+data$PG.ProteinGroups<- NULL
+#data[is.na(data)] <- 0
 
-#####Ploting 
+library(zoo)
+data[] <- t(na.aggregate(t(data)))
+data[1:5,1:5]
+
+
+data$rmean<- rowMeans(data)
+
+data2<- cbind.data.frame(data[20],data[21], data[22])
+colnames(data2)<-c("protein", "sample1","sample2", "mean")
+
+data2<- na.omit(data2)
+data2[1:5,]
+dim(data2)
+nonproteotypic <- data2[ grepl( ";" , data2$protein ), ] #extract all males
+proteotypic <- data2[!grepl( ";" , data2$protein ), ] #extract all males
+
+
+#nonproteotypic<- 
+tail(nonproteotypic)
+dim(nonproteotypic)
+
+####Ploting 
 
 library(ggplot2)
 library(scales)
